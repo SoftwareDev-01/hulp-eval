@@ -28,16 +28,28 @@ def grade_case(output_text: str, reference: dict, schema: dict) -> dict:
     schema_result = grade_schema(output_text, schema)
     results["schema"] = schema_result
 
+    parsed = schema_result.get("parsed")
+    
+    # If we have parsed JSON, sanitize it for critical failure graders
+    # by removing fields that legitimately contain missing/clarification info
+    if parsed:
+        import json
+        sanitized_parsed = parsed.copy()
+        sanitized_parsed["clarification_questions"] = []
+        sanitized_parsed["missing_information"] = []
+        text_for_critical = json.dumps(sanitized_parsed)
+    else:
+        text_for_critical = output_text
+
     # 2. Superseded facts (critical)
-    superseded_result = grade_superseded(output_text, reference)
+    superseded_result = grade_superseded(text_for_critical, reference)
     results["superseded_facts"] = superseded_result
 
     # 3. Must-not-assert (critical)
-    must_not_result = grade_must_not_assert(output_text, reference)
+    must_not_result = grade_must_not_assert(text_for_critical, reference)
     results["must_not_assert"] = must_not_result
 
     # If schema is valid, do content-level grading
-    parsed = schema_result.get("parsed")
     if parsed:
         # 4. Constraint recall/precision (deterministic fuzzy)
         pred_constraints = parsed.get("hard_constraints", [])

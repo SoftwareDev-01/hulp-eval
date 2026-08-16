@@ -90,10 +90,10 @@ FIELD_POLICY = {
         "purpose": "raw document data, never needed",
     },
 
-    # Date of birth — generalise to age band when relevant
+    # Date of birth — generalise to precise age (years + months) when relevant
     "date_of_birth": {
         "action": "generalise",
-        "generalise_to": "age_band",
+        "generalise_to": "precise_age",
         "purpose": "only when age is task-relevant (e.g. paediatric)",
     },
 
@@ -158,8 +158,16 @@ def _generalise_address_to_city(address: str) -> str:
     return address
 
 
-def _generalise_dob_to_age_band(dob_str: str) -> str:
-    """Convert date of birth to age band (e.g. '6-8 years')."""
+def _generalise_dob_to_precise_age(dob_str: str) -> str:
+    """Convert date of birth to a precise synthetic age (years + months).
+    
+    This removes the actual DOB (PII) but preserves the exact numerical
+    precision needed for clinical contexts like paediatrics.
+    
+    Examples:
+        '2018-04-12' → 'Age: 8 years, 4 months'  (depending on today)
+        '1987-09-14' → 'Age: 38 years, 11 months'
+    """
     try:
         # Try common formats
         for fmt in ("%Y-%m-%d", "%d-%m-%Y", "%d/%m/%Y"):
@@ -172,26 +180,20 @@ def _generalise_dob_to_age_band(dob_str: str) -> str:
             return "age unknown"
 
         today = date.today()
-        age = today.year - dob.year - ((today.month, today.day) < (dob.month, dob.day))
+        years = today.year - dob.year
+        months = today.month - dob.month
+        if today.day < dob.day:
+            months -= 1
+        if months < 0:
+            years -= 1
+            months += 12
 
-        if age < 1:
-            return "infant (<1 year)"
-        elif age <= 3:
-            return f"toddler ({age} years)"
-        elif age <= 5:
-            return f"preschool ({age} years)"
-        elif age <= 12:
-            return f"child ({age} years)"
-        elif age <= 17:
-            return f"adolescent ({age} years)"
-        elif age <= 25:
-            return "young adult (18-25)"
-        elif age <= 40:
-            return "adult (26-40)"
-        elif age <= 60:
-            return "middle-aged (41-60)"
+        if years < 1:
+            return f"Age: {months} month{'s' if months != 1 else ''}"
         else:
-            return "senior (60+)"
+            year_str = f"{years} year{'s' if years != 1 else ''}"
+            month_str = f"{months} month{'s' if months != 1 else ''}"
+            return f"Age: {year_str}, {month_str}"
     except Exception:
         return "age unknown"
 
@@ -232,8 +234,8 @@ def generalise_value(field: str, value: str, generalise_to: str | None = None) -
         return _generalise_address_to_area(value)
     elif generalise_to == "city":
         return _generalise_address_to_city(value)
-    elif generalise_to == "age_band":
-        return _generalise_dob_to_age_band(value)
+    elif generalise_to == "precise_age":
+        return _generalise_dob_to_precise_age(value)
     elif field == "medical_history":
         return _generalise_medical_history(value)
     else:

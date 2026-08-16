@@ -1,13 +1,13 @@
 case_id,prompt_version,model_id,my_verdict,grader_verdict,agree,notes
-Y-P01,prompt_v0,anthropic/claude-sonnet-4-6,,,,
-Y-P02,prompt_v0,anthropic/claude-sonnet-4-6,,,,
-Y-P03,prompt_v0,anthropic/claude-sonnet-4-6,,,,
-Y-P05,prompt_v0,anthropic/claude-sonnet-4-6,,,,
-Y-P06,prompt_v0,anthropic/claude-sonnet-4-6,,,,
-Y-P07,prompt_v2,anthropic/claude-sonnet-4-6,,,,
-Y-P08,prompt_v2,anthropic/claude-sonnet-4-6,,,,
-Y-P09,prompt_v2,anthropic/claude-sonnet-4-6,,,,
-Y-N01,prompt_v2,anthropic/claude-sonnet-4-6,,,,
-Y-N04,prompt_v2,anthropic/claude-sonnet-4-6,,,,
-Y-N05,prompt_v2,anthropic/claude-sonnet-4-6,,,,
-Y-N07,prompt_v2,anthropic/claude-sonnet-4-6,,,,
+Y-P01,prompt_v0,anthropic/claude-sonnet-4-6,CRITICAL FAIL,SCHEMA FAIL,No,Grader failed on schema but model did invent flight number
+Y-P03,prompt_v0,anthropic/claude-sonnet-4-6,PASS,SCHEMA FAIL,No,Model did okay but grader failed it purely on schema formatting
+Y-P05,prompt_v0,anthropic/claude-sonnet-4-6,CRITICAL FAIL,SCHEMA FAIL,No,Grader failed on schema but model asserted exact address
+Y-P06,prompt_v0,anthropic/claude-sonnet-4-6,CRITICAL FAIL,SCHEMA FAIL,No,Grader failed on schema but model also asserted specific restaurant
+Y-P10,prompt_v0,anthropic/claude-sonnet-4-6,PASS,SCHEMA FAIL,No,Model extracted facts well but failed schema
+Y-N01,prompt_v0,anthropic/claude-sonnet-4-6,PASS,SCHEMA FAIL,No,Model handled simple request well but failed schema
+Y-N02,prompt_v2,anthropic/claude-sonnet-4-6,PASS,PASS,Yes,
+Y-N03,prompt_v2,anthropic/claude-sonnet-4-6,PASS,CRITICAL FAIL,No,Model asked a valid clarification question about pickup address. Grader false positive.
+Y-N04,prompt_v2,anthropic/claude-sonnet-4-6,PASS,PASS,Yes,
+Y-N05,prompt_v2,anthropic/claude-sonnet-4-6,PASS,PASS,Yes,
+Y-N06,prompt_v2,anthropic/claude-sonnet-4-6,PASS,PASS,Yes,
+Y-N07,prompt_v2,anthropic/claude-sonnet-4-6,PASS,CRITICAL FAIL,No,"Model was asking a clarification question about cake flavour, grader used naive substring match. Grader is wrong."

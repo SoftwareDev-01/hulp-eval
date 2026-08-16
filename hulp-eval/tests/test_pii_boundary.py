@@ -182,3 +182,29 @@ def test_kept_fields_present(case_id):
             assert field in result["model_payload"], (
                 f"Kept field '{field}' missing from payload for {case_id}"
             )
+
+
+def test_dob_replaced_with_precise_age():
+    """Verify DOB is replaced with a precise synthetic age (years + months), not a band."""
+    for case_id, context in PII_CASES.items():
+        if "date_of_birth" not in context:
+            continue
+        result = build_model_context(context)
+        payload = result["model_payload"]
+
+        # Raw DOB must NOT appear
+        assert context["date_of_birth"] not in json.dumps(payload), (
+            f"Raw DOB '{context['date_of_birth']}' leaked into payload for {case_id}"
+        )
+
+        # Precise age MUST appear with pattern "Age: X year(s), Y month(s)"
+        age_value = payload.get("date_of_birth", "")
+        assert age_value.startswith("Age: "), (
+            f"Expected 'Age: ...' format for {case_id}, got: '{age_value}'"
+        )
+        # Must contain a numeric year or month value
+        import re
+        assert re.search(r"\d+\s+(year|month)", age_value), (
+            f"Precise age format missing numeric year/month for {case_id}: '{age_value}'"
+        )
+
