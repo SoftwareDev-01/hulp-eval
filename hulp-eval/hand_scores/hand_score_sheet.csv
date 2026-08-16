@@ -1,0 +1,13 @@
+case_id,prompt_version,model_id,my_verdict,grader_verdict,agree,notes
+Y-P01,prompt_v0,anthropic/claude-sonnet-4-6,,,,
+Y-P02,prompt_v0,anthropic/claude-sonnet-4-6,,,,
+Y-P03,prompt_v0,anthropic/claude-sonnet-4-6,,,,
+Y-P05,prompt_v0,anthropic/claude-sonnet-4-6,,,,
+Y-P06,prompt_v0,anthropic/claude-sonnet-4-6,,,,
+Y-P07,prompt_v2,anthropic/claude-sonnet-4-6,,,,
+Y-P08,prompt_v2,anthropic/claude-sonnet-4-6,,,,
+Y-P09,prompt_v2,anthropic/claude-sonnet-4-6,,,,
+Y-N01,prompt_v2,anthropic/claude-sonnet-4-6,,,,
+Y-N04,prompt_v2,anthropic/claude-sonnet-4-6,,,,
+Y-N05,prompt_v2,anthropic/claude-sonnet-4-6,,,,
+Y-N07,prompt_v2,anthropic/claude-sonnet-4-6,,,,

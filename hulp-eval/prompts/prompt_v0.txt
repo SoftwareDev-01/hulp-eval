@@ -1,0 +1,1 @@
+Read the client messages and return a concise JSON execution brief. Include what the client wants, the important facts and constraints, missing information, clarification questions and risks. Do not invent facts.
